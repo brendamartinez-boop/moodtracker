@@ -1,0 +1,6 @@
+{
+  "name": "MoodDay",
+  "description": "Tu diario de estado de ánimo personal con sincronización en la nube.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
