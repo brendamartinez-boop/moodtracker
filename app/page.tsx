@@ -52,13 +52,13 @@ export default function MoodDayApp() {
   const [entries, setEntries] = useState<Record<string, DailyEntry>>({});
   const [user, setUser] = useState<User | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  
+
   // Form State
   const [mood, setMood] = useState<MoodId | null>(null);
   const [reflection, setReflection] = useState('');
   const [energy, setEnergy] = useState<EnergyId | null>(null);
   const [word, setWord] = useState('');
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const [showSavedFeedback, setShowSavedFeedback] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -169,28 +169,28 @@ export default function MoodDayApp() {
   const handleDelete = () => {
     const key = formatDateKey(selectedDate);
     if (!entries[key]) return;
-    
+
     const newEntries = { ...entries };
     delete newEntries[key];
-    
+
     setEntries(newEntries);
     localStorage.setItem('moodday_entries', JSON.stringify(newEntries));
-    
+
     if (user) syncToFirestore(user.uid, newEntries);
-    
+
     setMood(null);
     setReflection('');
     setEnergy(null);
     setWord('');
-    
+
     showToast('Entrada eliminada');
   };
 
   const handleSave = () => {
-    if (!mood) return; 
-    
+    if (!mood) return;
+
     setIsSaving(true);
-    
+
     const key = formatDateKey(selectedDate);
     const newEntries = {
       ...entries,
@@ -202,13 +202,13 @@ export default function MoodDayApp() {
         timestamp: Date.now()
       }
     };
-    
+
     setTimeout(async () => {
       setEntries(newEntries);
       localStorage.setItem('moodday_entries', JSON.stringify(newEntries));
-      
+
       if (user) await syncToFirestore(user.uid, newEntries);
-      
+
       setIsSaving(false);
       setShowSavedFeedback(true);
       setTimeout(() => setShowSavedFeedback(false), 2000);
@@ -228,7 +228,7 @@ export default function MoodDayApp() {
   const month = currentDate.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-  const startingDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; 
+  const startingDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
   const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blankDays = Array.from({ length: startingDay }, (_, i) => i);
@@ -241,7 +241,7 @@ export default function MoodDayApp() {
       if (entries[formatDateKey(d)]) {
         streak++;
       } else if (i > 0) {
-        break; 
+        break;
       }
     }
     return streak;
@@ -276,7 +276,7 @@ export default function MoodDayApp() {
       <header className="fixed top-0 w-full z-50 bg-[#0e0e0e]/70 backdrop-blur-xl border-b border-white/5">
         <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-[1600px] mx-auto">
           <div className="text-2xl font-serif italic text-[#69f6b8] font-bold tracking-tight">MoodDay</div>
-          
+
           <nav className="hidden md:flex items-center space-x-8 font-serif font-bold tracking-tight">
             <button className="text-[#69f6b8] border-b-2 border-[#69f6b8] pb-1">Journal</button>
             <button onClick={() => showToast('Próximamente')} className="text-zinc-500 hover:text-[#69f6b8] transition-colors duration-300">Insights</button>
@@ -285,7 +285,7 @@ export default function MoodDayApp() {
 
           <div className="flex items-center space-x-4 md:space-x-6">
             {!user ? (
-              <button 
+              <button
                 onClick={handleLogin}
                 className="bg-[#20201f] text-white px-4 md:px-6 py-2 rounded-full border border-white/10 hover:bg-[#2a2a29] transition-all flex items-center gap-2"
               >
@@ -309,7 +309,7 @@ export default function MoodDayApp() {
                     <UserIcon className="w-4 h-4 text-zinc-400" />
                   </div>
                 )}
-                <button 
+                <button
                   onClick={handleLogout}
                   className="p-2 rounded-full bg-[#1a1a1a] border border-white/10 hover:bg-[#262626] text-zinc-400 hover:text-white transition-all"
                 >
@@ -325,7 +325,7 @@ export default function MoodDayApp() {
       <div className="fixed top-[72px] left-0 w-full z-40 px-4 md:px-12 py-3 pointer-events-none">
         <div className="max-w-[1600px] mx-auto flex flex-col items-center md:items-end gap-2">
           {!user ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="bg-[#1a1a1a]/80 border border-white/5 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm pointer-events-auto"
@@ -338,7 +338,7 @@ export default function MoodDayApp() {
               <button onClick={handleLogin} className="text-[10px] text-[#69f6b8] hover:underline uppercase tracking-wider font-bold">Activar Nube</button>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="bg-[#69f6b8]/10 border border-[#69f6b8]/20 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm pointer-events-auto"
@@ -363,11 +363,11 @@ export default function MoodDayApp() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col md:flex-row pt-[140px] h-screen relative z-10 max-w-[1600px] mx-auto w-full">
-        
+
         {/* Left Column: Calendar */}
         <section className="w-full md:w-[40%] lg:w-[35%] p-6 md:p-12 custom-scrollbar overflow-y-auto pb-32 md:pb-12">
           <div className="max-w-md mx-auto">
-            
+
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-10">
               <h2 className="font-serif text-3xl md:text-4xl font-bold tracking-tight capitalize">
@@ -393,14 +393,14 @@ export default function MoodDayApp() {
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-2 md:gap-3">
               {blankDays.map(b => <div key={`blank-${b}`} className="aspect-square" />)}
-              
+
               {calendarDays.map(day => {
                 const date = new Date(year, month, day);
                 const key = formatDateKey(date);
                 const entry = entries[key];
                 const isSelected = isSameDay(date, selectedDate);
                 const isToday = isSameDay(date, new Date());
-                
+
                 let bgClass = "bg-[#1a1a1a] hover:bg-[#262626] text-zinc-400";
                 let borderClass = "border border-transparent";
                 let emojiIndicator = null;
@@ -441,7 +441,7 @@ export default function MoodDayApp() {
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <h3 className="font-serif italic text-xl mb-3 text-white relative z-10">Resumen Mensual</h3>
               <p className="text-sm text-zinc-400 leading-relaxed relative z-10">
-                Has registrado <span className="text-white font-bold">{calculateStreak()} días</span> seguidos. 
+                Has registrado un 67 <span className="text-white font-bold">{calculateStreak()} días</span> seguidos.
                 Sigue así para mantener un registro saludable de tus emociones.
               </p>
             </div>
@@ -451,10 +451,10 @@ export default function MoodDayApp() {
         {/* Right Column: Entry Form */}
         <section className="w-full md:w-[60%] lg:w-[65%] bg-[#131313] md:rounded-tl-[3rem] border-t md:border-t-0 md:border-l border-white/5 p-6 md:p-16 lg:p-24 custom-scrollbar overflow-y-auto shadow-[-20px_0_50px_rgba(0,0,0,0.5)] relative z-20">
           <div className="max-w-2xl mx-auto space-y-10 md:space-y-12 pb-24">
-            
+
             {/* Form Header */}
             <div>
-              <motion.h1 
+              <motion.h1
                 key={selectedDate.toISOString()}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -477,11 +477,10 @@ export default function MoodDayApp() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setMood(m.id)}
-                      className={`flex flex-col items-center justify-center gap-2 md:gap-3 p-4 md:p-6 rounded-3xl transition-all duration-300 border ${
-                        isSelected 
-                          ? `${m.bg} ${m.border} ${m.shadow}` 
+                      className={`flex flex-col items-center justify-center gap-2 md:gap-3 p-4 md:p-6 rounded-3xl transition-all duration-300 border ${isSelected
+                          ? `${m.bg} ${m.border} ${m.shadow}`
                           : 'bg-[#1a1a1a] border-white/5 hover:border-white/20'
-                      }`}
+                        }`}
                     >
                       <span className={`text-3xl md:text-4xl transition-transform duration-300 ${isSelected ? 'scale-110 drop-shadow-lg' : 'grayscale-[0.5] opacity-70'}`}>
                         {m.emoji}
@@ -499,7 +498,7 @@ export default function MoodDayApp() {
             <div className="space-y-5">
               <label className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Reflexión</label>
               <div className="relative group">
-                <textarea 
+                <textarea
                   value={reflection}
                   onChange={(e) => setReflection(e.target.value)}
                   className="w-full h-40 md:h-48 bg-[#1a1a1a] p-6 md:p-8 rounded-[2rem] border border-white/5 focus:border-[#69f6b8]/50 focus:ring-1 focus:ring-[#69f6b8]/50 text-lg md:text-xl text-white placeholder:text-zinc-600 resize-none transition-all outline-none"
@@ -523,9 +522,8 @@ export default function MoodDayApp() {
                       <button
                         key={e.id}
                         onClick={() => setEnergy(e.id)}
-                        className={`flex-1 py-3 px-2 md:px-6 rounded-full text-xs md:text-sm font-bold transition-all relative z-10 ${
-                          isSelected ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
+                        className={`flex-1 py-3 px-2 md:px-6 rounded-full text-xs md:text-sm font-bold transition-all relative z-10 ${isSelected ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
+                          }`}
                       >
                         {isSelected && (
                           <motion.div
@@ -544,7 +542,7 @@ export default function MoodDayApp() {
               {/* 4. Word of the Day */}
               <div className="space-y-5">
                 <label className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Una palabra para hoy</label>
-                <input 
+                <input
                   type="text"
                   value={word}
                   onChange={(e) => setWord(e.target.value)}
@@ -558,7 +556,7 @@ export default function MoodDayApp() {
             {/* 5. Save Button */}
             <div className="pt-8 flex gap-4">
               {entries[formatDateKey(selectedDate)] && (
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDelete}
@@ -569,18 +567,17 @@ export default function MoodDayApp() {
                   <span className="hidden md:inline">Eliminar</span>
                 </motion.button>
               )}
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSave}
                 disabled={!mood || isSaving}
-                className={`flex-1 py-5 md:py-6 rounded-full font-bold text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
-                  !mood 
-                    ? 'bg-[#1a1a1a] text-zinc-500 cursor-not-allowed border border-white/5' 
+                className={`flex-1 py-5 md:py-6 rounded-full font-bold text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden ${!mood
+                    ? 'bg-[#1a1a1a] text-zinc-500 cursor-not-allowed border border-white/5'
                     : isSaving
-                    ? 'bg-gradient-to-r from-[#69f6b8] to-[#58e7ab] text-[#00452d] opacity-80 cursor-wait'
-                    : 'bg-gradient-to-r from-[#69f6b8] to-[#58e7ab] text-[#00452d] shadow-[0_10px_30px_rgba(105,246,184,0.2)] hover:shadow-[0_15px_40px_rgba(105,246,184,0.4)]'
-                }`}
+                      ? 'bg-gradient-to-r from-[#69f6b8] to-[#58e7ab] text-[#00452d] opacity-80 cursor-wait'
+                      : 'bg-gradient-to-r from-[#69f6b8] to-[#58e7ab] text-[#00452d] shadow-[0_10px_30px_rgba(105,246,184,0.2)] hover:shadow-[0_15px_40px_rgba(105,246,184,0.4)]'
+                  }`}
               >
                 <AnimatePresence mode="wait">
                   {isSaving ? (
